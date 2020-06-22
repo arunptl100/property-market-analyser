@@ -1,6 +1,7 @@
 import xml.etree.ElementTree as ET
 import requests
 
+
 # False = Use a raw xml dump for testing purposes
 # True  = Use live api requests
 live = False
@@ -15,6 +16,7 @@ url = api_url_base + 'property_listings'
 class properties:
     def __init__(self):
         self.properties = []
+        self.score = 0
 
     def addprop(self, xml_iter):
         self.properties.append(xml_iter)
@@ -30,7 +32,8 @@ class properties:
                 elif child.tag == "longitude":
                     print("Longitude : " + child.text)
                 elif child.tag == "price":
-                    print("Price : " + "£" + child.text)
+                    print("Price : " + "£{:,.2f}".format(float(child.text)))
+            print("Score : " + str(self.score))
             print("==========================================================")
 
 
