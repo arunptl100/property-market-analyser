@@ -1,0 +1,55 @@
+<listing>
+  <agent_address>158 The Parade, Leamington Spa</agent_address>
+  <agent_logo>https://st.zoocdn.com/zoopla_static_agent_logo_(255579).png</agent_logo>
+  <agent_name>Fine &amp; Country - Leamington Spa</agent_name>
+  <agent_phone>01926 267823</agent_phone>
+  <category>Residential</category>
+  <country>England</country>
+  <country_code>gb</country_code>
+  <county>Warwickshire</county>
+  <description>An amazing opportunity to acquire this imposing Regency Villa. With a wealth of original features and high ceilings throughout, this property is one of only four of its kind in this highly sought after area of Royal Leamington Spa. It offers five reception rooms and a kitchen on the ground floor, cellar, and versatile upstairs living space with up to seven bedrooms over two floors. The top floor remains laid out as servants quarters but subject to the relevant building regulations could provide extra living accommodation. The property has huge potential but does need modernising to become the perfect family home once more.</description>
+  <details_url>https://www.zoopla.co.uk/for-sale/details/55249482?utm_source=v1:_aOYFm6eHBbK8wezaKxysmDlNkAk0eDb&amp;utm_medium=api</details_url>
+  <displayable_address>Newbold Terrace, Leamington Spa, Warwickshire CV32</displayable_address>
+  <first_published_date>2020-06-19 15:12:45</first_published_date>
+  <floor_area>
+    <name>max_floor_area</name>
+    <units>sq_feet</units>
+    <value>5479</value>
+  </floor_area>
+  <floor_plan>https://lc.zoocdn.com/da3b9b7e0fd380d070ac2e863c121c1f37c9627a.jpg</floor_plan>
+  <furnished_state>
+  </furnished_state>
+  <image_150_113_url>https://lid.zoocdn.com/150/113/a441365b8aecbc041511f06aa67fe0dba6db32a6.jpg</image_150_113_url>
+  <image_354_255_url>https://lid.zoocdn.com/354/255/a441365b8aecbc041511f06aa67fe0dba6db32a6.jpg</image_354_255_url>
+  <image_50_38_url>https://lid.zoocdn.com/50/38/a441365b8aecbc041511f06aa67fe0dba6db32a6.jpg</image_50_38_url>
+  <image_645_430_url>https://lid.zoocdn.com/645/430/a441365b8aecbc041511f06aa67fe0dba6db32a6.jpg</image_645_430_url>
+  <image_80_60_url>https://lid.zoocdn.com/80/60/a441365b8aecbc041511f06aa67fe0dba6db32a6.jpg</image_80_60_url>
+  <image_caption>8420614-Exterior07.Jpg</image_caption>
+  <image_url>https://lid.zoocdn.com/354/255/a441365b8aecbc041511f06aa67fe0dba6db32a6.jpg</image_url>
+  <last_published_date>2020-06-22 09:29:25</last_published_date>
+  <latitude>52.290085</latitude>
+  <listing_id>55249482</listing_id>
+  <listing_status>sale</listing_status>
+  <location_is_approximate>0</location_is_approximate>
+  <longitude>-1.528176</longitude>
+  <num_bathrooms>3</num_bathrooms>
+  <num_bedrooms>6</num_bedrooms>
+  <num_floors>0</num_floors>
+  <num_recepts>5</num_recepts>
+  <outcode>CV32</outcode>
+  <post_town>Leamington Spa</post_town>
+  <price>1750000</price>
+  <price_change>
+    <date>2020-06-19 15:10:40</date>
+    <direction>
+    </direction>
+    <percent>0%</percent>
+    <price>1750000</price>
+  </price_change>
+  <price_modifier>guide_price</price_modifier>
+  <property_type>Detached house</property_type>
+  <short_description>&lt;p class=&quot;top&quot;&gt;An amazing opportunity to acquire this imposing Regency Villa. With a wealth of original features and high ceilings throughout, this property is one of only four of its kind in this highly sought after area of Royal Leamington Spa. It offers five reception rooms and a kitchen on the ground floor, cellar, and versatile upstairs living space with up to seven bedrooms over two floors. The top floor remains laid out as servants quarters but subject to the relevant building regulations could provide extra living accommodation. The property has huge potential but does need modernising to become the perfect family home once more.&lt;/p&gt;</short_description>
+  <status>for_sale</status>
+  <street_name>Newbold Terrace</street_name>
+  <thumbnail_url>https://lid.zoocdn.com/80/60/a441365b8aecbc041511f06aa67fe0dba6db32a6.jpg</thumbnail_url>
+</listing>
