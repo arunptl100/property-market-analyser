@@ -1,4 +1,5 @@
 import xml.etree.ElementTree as ET
+from collections import defaultdict
 import requests
 
 
@@ -13,27 +14,61 @@ parameters = {'api_key': api_token}
 url = api_url_base + 'property_listings'
 
 
+# use property objects storing attributes in a dictionary
+# store a list of attributes for a property
+# to print all attributes stored for a property
+# iterate through attr list , giving key for the dictionary
+class property:
+    def __init__(self):
+        # store attributes of a property in a dictionary
+        self.attributes = defaultdict(str)
+        # attr_list is a list of attribute names (keys for attributes dictiona)
+        self.attr_list = []
+        self.score = 0
+
+    def parse_xml(self, listing):
+        # parse an property given in XML
+        for child in listing:
+            self.attr_list.append(child.tag)
+            self.attributes[child.tag] = child.text
+
+    def print(self):
+        # get every attribute name for the property
+        for att in self.attr_list:
+            if att == "price":
+                print(att + " : " + "£{:,.2f}".format(float(self.attributes[att])))
+            else:
+                # retrieve the attributes value from the dictionary
+                print(att + " : " + self.attributes[att])
+        print("Score : " + str(self.score))
+
+
 class properties:
     def __init__(self):
         self.properties = []
-        self.score = 0
 
-    def addprop(self, xml_iter):
-        self.properties.append(xml_iter)
+    # adds a property to the list given an xml iter
+    def add_property_xml(self, xml_iter):
+        prop = property()
+        prop.parse_xml(xml_iter)
+        self.properties.append(prop)
 
-    def print(self):
+    # Prints every stored attribute for the property
+    def print_all(self):
         print("==========================================================")
         for property in self.properties:
-            for child in property:
-                if child.tag == "agent_address":
-                    print("Address : " + child.text)
-                elif child.tag == "latitude":
-                    print("Latitude : " + child.text)
-                elif child.tag == "longitude":
-                    print("Longitude : " + child.text)
-                elif child.tag == "price":
-                    print("Price : " + "£{:,.2f}".format(float(child.text)))
-            print("Score : " + str(self.score))
+            property.print()
+            print("==========================================================")
+
+    # prints a summary of a property sourced from zoopla
+    def print_summary_zoopla(self):
+        print("==========================================================")
+        for property in self.properties:
+            print("Address : " + property.attributes['agent_address'])
+            print("Longitude : " + property.attributes['longitude'])
+            print("Latitude : " + property.attributes['latitude'])
+            print("Price : " + "£{:,.2f}".format(float(property.attributes['price'])))
+            print("Score : " + str(property.score))
             print("==========================================================")
 
 
@@ -49,9 +84,9 @@ else:
 
 props = properties()
 for listing in root.iter("listing"):
-    props.addprop(listing)
+    props.add_property_xml(listing)
 
-props.print()
+props.print_summary_zoopla()
 
 
 
