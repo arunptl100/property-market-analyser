@@ -6,7 +6,7 @@ from apscheduler.schedulers.blocking import BlockingScheduler
 
 # False = Use a raw xml dump for testing purposes
 # True  = Use live api requests
-live = False
+live = True
 
 # Zoopla API details
 api_token = 'kwgn93rerntytt8e5zy5zf84'
@@ -21,10 +21,12 @@ class property:
         self.attributes = defaultdict(str)
         self.score = 0
 
+    # parses a property given in xml from Zoopla
     def parse_xml(self, listing, preferences):
         # parse an property given in XML
         for child in listing:
-            self.attributes[child.tag] = child.text
+            if child.text is not None:
+                self.attributes[child.tag] = child.text
         # compute the properties score based on preferences
         for pref in preferences:
             if pref == 'num_bedrooms':
@@ -35,6 +37,11 @@ class property:
             elif pref == 'budget':
                 # formula: -((price - budget)/100000)
                 self.score += -(((int(self.attributes['price'])) - int(preferences['budget']))/100000)
+            elif pref == 'property_type':
+                # if the type of property matches the preferered type then add
+                # 10 to the score
+                if self.attributes['property_type'] == preferences['property_type']:
+                    self.score += 10
 
     def print(self):
         # get every attribute name for the property
@@ -76,12 +83,13 @@ class properties:
         print("==========================================================")
         for property in self.properties:
             print("Address : " + property.attributes['agent_address'])
+            print("Type : " + property.attributes['property_type'])
             print("Longitude : " + property.attributes['longitude'])
             print("Latitude : " + property.attributes['latitude'])
             print("Bedrooms : " + property.attributes['num_bedrooms'])
             print("Bathrooms : " + property.attributes['num_bathrooms'])
             print("Price : " + "£{:,.2f}".format(float(property.attributes['price'])))
-            print("Score : " + str(property.score))
+            print("Score : " + str(round(property.score, 2)))
             print("==========================================================")
 
     # sorts the property list based on the score of properties
@@ -102,6 +110,7 @@ def run():
     preferences['num_bedrooms'] = 4
     preferences['num_bathrooms'] = 2
     preferences['budget'] = 600000
+    preferences['property_type'] = 'Detached house'
 
     if live:
         response = requests.get(url=url, params=parameters)
@@ -123,8 +132,11 @@ run()
 scheduler = BlockingScheduler()
 # seconds hours
 scheduler.add_job(run, 'interval', hours=1)
+# call run every interval
 try:
     scheduler.start()
 except KeyboardInterrupt:
+    # cleans up the console output on ctrl-c
+    # by suppressing the exceptions output
     quit()
 # whitespace
