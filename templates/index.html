@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+
+<body>
+
+<div class="jumbotron text-center">
+  <h1>Property Market Analyser</h1>
+  <p>https://github.com/arunptl100</p>
+</div>
+
+<div class="container">
+  <form form action = "http://localhost:5000/scan" method = "POST">
+    <div class="row">
+      <div class="col-sm-4">
+        <h3>Location</h3>
+        <p class="prefs">
+            <input type="text" class="form-control txt_in" id="location" placeholder="Desired property location">
+        </p>
+      </div>
+      <div class="col-sm-4">
+        <h3>Property Type</h3>
+        <p class="prefs">
+          <select class="form-control txt_in" id="exampleFormControlSelect1">
+            <option>Detached House</option>
+            <option>Semi-detached</option>
+            <option>Flat</option>
+            <option>End terrace house</option>
+          </select>
+        </p>
+      </div>
+      <div class="col-sm-4">
+        <h3>Budget (£)</h3>
+        <p class="prefs">
+            <input type="text" class="form-control txt_in" id="location" placeholder="Budget">
+        </p>
+      </div>
+      <div class="col-sm-4">
+        <h3>Bedrooms</h3>
+        <p class="prefs">
+            <input type="text" class="form-control txt_in" id="location" placeholder="Number of bedrooms">
+        </p>
+      </div>
+      <div class="col-sm-4">
+        <h3>Bathrooms</h3>
+        <p class="prefs">
+            <input type="text" class="form-control txt_in" id="location" placeholder="Number of bathrooms">
+        </p>
+      </div>
+      <div class="col-sm-4">
+        <h3>Proximity to train stations</h3>
+        <p class="prefs">
+            <input type="text" class="form-control txt_in" id="location" placeholder="Distance to trainstation">
+        </p>
+      </div>
+    </div>
+
+    <div style="text-align:center;">
+      <button type="submit" class="btn btn-primary btn-lg go-cent">Scan</button>
+    </div>
+  </form>
+</div>
+
+</body>
+</html>

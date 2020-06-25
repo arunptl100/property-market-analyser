@@ -8,7 +8,9 @@ from math import cos, asin, sqrt, pi
 # False = Use a raw xml dump for testing purposes
 # True  = Use live api requests
 live = False
-
+# False = Code ran once
+# True = Code ran every interval
+repeat = False
 # Zoopla API details
 api_token = 'kwgn93rerntytt8e5zy5zf84'
 api_url_base = 'https://api.zoopla.co.uk/api/v1/'
@@ -80,6 +82,8 @@ class property:
                         stations_in_range.append(row[4])
                         # add 10 to the properties score
                         self.score += 10
+        # now check for any duplicate stations in the list due to errors in the
+        # dataset
         self.near_stations = stations_in_range
 
     def print(self):
@@ -163,17 +167,18 @@ def run():
         props.add_property_xml(listing)
     props.print_summary_zoopla()
     executions += 1
-    print("Checked ", executions, " times")
-    print("Checking again in ", interval, " hour(s)\n\n\n")
+    if repeat:
+        print("Checked ", executions, " times")
+        print("Checking again in ", interval, " hour(s)\n\n\n")
 
-
-run()
-scheduler = BlockingScheduler()
-# seconds hours
-scheduler.add_job(run, 'interval', hours=1)
-# call run every interval
 try:
-    scheduler.start()
+    run()
+    if repeat:
+        scheduler = BlockingScheduler()
+        # seconds hours
+        scheduler.add_job(run, 'interval', hours=1)
+        # call run every interval
+        scheduler.start()
 except KeyboardInterrupt:
     # cleans up the console output on ctrl-c
     # by suppressing the exceptions output
@@ -182,5 +187,6 @@ except KeyboardInterrupt:
 # test = property()
 # print(test.compute_distance(52.2844903882, -1.5362099942, 52.304604, -1.528168))
 
-# TODO: notification if best score so far is bested
-# whitespace
+# TODO:
+#  - notification if best score so far is bested
+#  - scrape data from savills etc for more data sources
