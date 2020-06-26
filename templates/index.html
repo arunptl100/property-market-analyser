@@ -4,6 +4,7 @@
 <head>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+  <script src="{{url_for('static', filename='js/core.js')}}"></script>
 </head>
 
 <body>
@@ -19,13 +20,13 @@
       <div class="col-sm-4">
         <h3>Location</h3>
         <p class="prefs">
-            <input type="text" class="form-control txt_in" id="location" placeholder="Desired property location">
+            <input type="text" class="form-control txt_in" id="location" placeholder="Desired property location" name="location">
         </p>
       </div>
       <div class="col-sm-4">
         <h3>Property Type</h3>
         <p class="prefs">
-          <select class="form-control txt_in" id="exampleFormControlSelect1">
+          <select class="form-control txt_in" id="exampleFormControlSelect1" name="type">
             <option>Detached House</option>
             <option>Semi-detached</option>
             <option>Flat</option>
@@ -36,31 +37,34 @@
       <div class="col-sm-4">
         <h3>Budget (£)</h3>
         <p class="prefs">
-            <input type="text" class="form-control txt_in" id="location" placeholder="Budget">
+            <input type="text" class="form-control txt_in" id="location" placeholder="Budget" name="budget">
         </p>
       </div>
       <div class="col-sm-4">
         <h3>Bedrooms</h3>
         <p class="prefs">
-            <input type="text" class="form-control txt_in" id="location" placeholder="Number of bedrooms">
+            <input type="text" class="form-control txt_in" id="location" placeholder="Number of bedrooms" name="beds">
         </p>
       </div>
       <div class="col-sm-4">
         <h3>Bathrooms</h3>
         <p class="prefs">
-            <input type="text" class="form-control txt_in" id="location" placeholder="Number of bathrooms">
+            <input type="text" class="form-control txt_in" id="location" placeholder="Number of bathrooms" name="baths">
         </p>
       </div>
       <div class="col-sm-4">
         <h3>Proximity to train stations</h3>
         <p class="prefs">
-            <input type="text" class="form-control txt_in" id="location" placeholder="Distance to trainstation">
+            <input type="text" class="form-control txt_in" id="location" placeholder="Distance to trainstation" name="dist_train">
         </p>
       </div>
+      <h3 for="formControlRange" id="interval_text">Scanning time interval: 5 hours(s)</h3>
+      <input type="range" name="interval" min="1" max="96" value="5" class="form-control-range" id="formControlRange" oninput="updateTextInput(this.value);">
     </div>
 
     <div style="text-align:center;">
-      <button type="submit" class="btn btn-primary btn-lg go-cent">Scan</button>
+      <button type="submit" class="btn btn-primary btn-lg go-cent" name="action" value="New Scan">New Scan</button>
+      <button type="submit" class="btn btn-warning btn-lg go-cent" style="margin-left: 2rem" name="action" value="See results">See results</button>
     </div>
   </form>
 </div>

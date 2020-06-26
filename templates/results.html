@@ -26,30 +26,16 @@
       </tr>
     </thead>
     <tbody>
+      {% for property in result %}
       <tr>
-        <th scope="row">5 Euston Place</th>
-        <td>Detached house</td>
-        <td>4</td>
-        <td>3</td>
-        <td>£450,000.00</td>
-        <td>23.5</td>
+        <th scope="row" style="word-break:break-all;">{{ property["agent_address"] }}</th>
+        <td>{{ property["property_type"] }}</td>
+        <td>{{ property["num_bedrooms"] }}</td>
+        <td>{{ property["num_bathrooms"] }}</td>
+        <td>{{ property["price"] }}</td>
+        <td>{{ property["score"] }}</td>
       </tr>
-      <tr>
-        <th scope="row">5 Euston Place</th>
-        <td>Detached house</td>
-        <td>4</td>
-        <td>3</td>
-        <td>£450,000.00</td>
-        <td>23.5</td>
-      </tr>
-      <tr>
-        <th scope="row">5 Euston Place</th>
-        <td>Detached house</td>
-        <td>4</td>
-        <td>3</td>
-        <td>£450,000.00</td>
-        <td>23.5</td>
-      </tr>
+      {% endfor %}
     </tbody>
   </table>
 </div>

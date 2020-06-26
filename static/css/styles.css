@@ -16,4 +16,9 @@
 .next-scn{
   text-align: center;
   margin: 30px 0 0 0;
+  font-size: 20px;
+}
+
+.jumbotron{
+  max-height: 12rem !important;
 }

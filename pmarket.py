@@ -1,7 +1,7 @@
 import xml.etree.ElementTree as ET
 from collections import defaultdict
+
 import requests
-from apscheduler.schedulers.blocking import BlockingScheduler
 import csv
 from math import cos, asin, sqrt, pi
 
@@ -10,13 +10,16 @@ from math import cos, asin, sqrt, pi
 live = False
 # False = Code ran once
 # True = Code ran every interval
-repeat = False
+repeat = True
 # Zoopla API details
 api_token = 'kwgn93rerntytt8e5zy5zf84'
 api_url_base = 'https://api.zoopla.co.uk/api/v1/'
 parameters = {'api_key': api_token}
 url = api_url_base + 'property_listings'
 
+executions = 0
+interval = 1
+global_prop_list = []
 
 class property:
     def __init__(self):
@@ -45,9 +48,9 @@ class property:
                 self.score += -(((int(self.attributes['price'])) - int(preferences['budget']))/100000)
             elif pref == 'property_type':
                 # if the type of property matches the preferered type then add
-                # 10 to the score
+                # 15 to the score
                 if self.attributes['property_type'] == preferences['property_type']:
-                    self.score += 10
+                    self.score += 15
             # update score based on stations nearby the property
         self.get_stations_near_property(preferences)
 
@@ -110,7 +113,7 @@ class properties:
 
     # Prints every stored attribute for the property
     def print_all(self):
-        self.sort_properties()
+        self.sort_properties(False)
         print("==========================================================")
         for property in self.properties:
             property.print()
@@ -119,7 +122,7 @@ class properties:
     # prints a summary of a property sourced from zoopla
     # the keys used a specific to zoopla API responses
     def print_summary_zoopla(self):
-        self.sort_properties()
+        self.sort_properties(False)
         print("==========================================================")
         for property in self.properties:
             print("Address : " + property.attributes['agent_address'])
@@ -134,27 +137,44 @@ class properties:
             print("Score : " + str(round(property.score, 2)))
             print("==========================================================")
 
+    def get_properties(self):
+        self.sort_properties(True)
+        # this returns an object containing a dictionary of attributes
+        attr_list = []
+        for prop in self.properties:
+            # make the price pretty
+            prop.attributes['price'] = "£{:,.2f}".format(float(prop.attributes['price']))
+            # take the first and last part of the address
+            addr = prop.attributes['agent_address'].split(",")
+            prop.attributes['agent_address'] = addr[0] + ", " + addr[-1]
+            # add the score to the attribute dictionary
+            prop.attributes['score'] = prop.score
+            attr_list.append(prop.attributes)
+        return attr_list
+
     # sorts the property list based on the score of properties
-    def sort_properties(self):
-        self.properties.sort(key=lambda x: x.score)
+    def sort_properties(self, reverse):
+        self.properties.sort(key=lambda x: x.score, reverse=reverse)
 
 
-executions = 0
-interval = 1
+def see_results():
+    return global_prop_list
 
 
-def run():
+def do_work(area, beds, baths, budget, type, dist_train, interval):
     global executions
-    parameters['area'] = 'Leamington Spa'
+    print("Beginning a scan")
+    parameters['area'] = area
     parameters['page_size'] = '100'
 
     preferences = defaultdict(str)
-    preferences['num_bedrooms'] = 4
-    preferences['num_bathrooms'] = 2
-    preferences['budget'] = 500000
-    preferences['property_type'] = 'Detached house'
-    preferences['dist_to_station'] = 1
+    preferences['num_bedrooms'] = beds
+    preferences['num_bathrooms'] = baths
+    preferences['budget'] = budget
+    preferences['property_type'] = type
+    preferences['dist_to_station'] = dist_train
 
+    print("Processing the parameters: area: ", area, ", beds: ", beds, ", baths: ", baths, ", budget: ", budget, ", type: ", type, ", dist_train: ", dist_train)
     if live:
         response = requests.get(url=url, params=parameters)
         root = ET.fromstring(response.text)
@@ -165,27 +185,13 @@ def run():
     props = properties(preferences)
     for listing in root.iter("listing"):
         props.add_property_xml(listing)
-    props.print_summary_zoopla()
+    # props.print_summary_zoopla()
+
     executions += 1
-    if repeat:
-        print("Checked ", executions, " times")
-        print("Checking again in ", interval, " hour(s)\n\n\n")
+    global global_prop_list
+    global_prop_list = props.get_properties().copy()
 
-try:
-    run()
-    if repeat:
-        scheduler = BlockingScheduler()
-        # seconds hours
-        scheduler.add_job(run, 'interval', hours=1)
-        # call run every interval
-        scheduler.start()
-except KeyboardInterrupt:
-    # cleans up the console output on ctrl-c
-    # by suppressing the exceptions output
-    quit()
 
-# test = property()
-# print(test.compute_distance(52.2844903882, -1.5362099942, 52.304604, -1.528168))
 
 # TODO:
 #  - notification if best score so far is bested
