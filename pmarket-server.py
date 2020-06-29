@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, g
 import pmarket
 from apscheduler.schedulers.background import BackgroundScheduler
 
@@ -11,14 +11,23 @@ def index():
 
 
 def run(area, beds, baths, budget, type, dist_train, interval):
-    pmarket.do_work(area, beds, baths, budget, type, dist_train, interval)
     # setup the background scheduler to auto scan every interval
-    global scheduler
+    # print("num jobs = ", len(scheduler.get_jobs()))
+    # the below check is for if the scheduler is already running and a search
+    # is made
+    # In this case we should remove the current job and append the new one
+    if scheduler.running:
+        if scheduler.get_jobs():
+            scheduler.remove_job("prop_job")
+    else:
+        # on the very first scan just start the scheduler 
+        scheduler.start()
     # problem, we get new instances of this file and lose the reference to the last
     # scheduler making it impossible to shutdownt the last scheduler
-    scheduler.add_job(pmarket.do_work, 'interval', args=(area, beds, baths, budget, type, dist_train, interval), seconds=30, id="prop_job")
-    scheduler.start()
-    print("starting background scheduler")
+    scheduler.add_job(pmarket.do_work, 'interval', args=(area, beds, baths, budget, type, dist_train, interval), hours=int(interval), id="prop_job")
+    print("starting background scheduler with interval ", interval, " hour(s)")
+    pmarket.do_work(area, beds, baths, budget, type, dist_train, interval)
+    print("returning for => ", area)
     return pmarket.see_results()
 
 
