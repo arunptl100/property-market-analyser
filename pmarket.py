@@ -34,24 +34,22 @@ class property:
         # parse an property given in XML
         for child in listing:
             if child.text is not None:
+                # compute the properties score based on preferences
                 self.attributes[child.tag] = child.text
-        # compute the properties score based on preferences
-        # self.get_stations_near_property(1)
-        for pref in preferences:
-            if pref == 'num_bedrooms':
-                # formula: |-Actual-Preference|
-                self.score += abs(-int(self.attributes['num_bedrooms'])-int(preferences['num_bedrooms']))
-            elif pref == 'num_bathrooms':
-                self.score += abs(-int(self.attributes['num_bathrooms'])-int(preferences['num_bathrooms']))
-            elif pref == 'budget':
-                # formula: -((price - budget)/100000)
-                self.score += -(((int(self.attributes['price'])) - int(preferences['budget']))/100000)
-            elif pref == 'property_type':
-                # if the type of property matches the preferered type then add
-                # 15 to the score
-                if self.attributes['property_type'] == preferences['property_type']:
-                    self.score += 15
-            # update score based on stations nearby the property
+                if child.text == 'num_bedrooms':
+                    # formula: |-Actual-Preference|
+                    self.score += abs(-int(self.attributes['num_bedrooms'])-int(preferences['num_bedrooms']))
+                elif child.text == 'num_bathrooms':
+                    self.score += abs(-int(self.attributes['num_bathrooms'])-int(preferences['num_bathrooms']))
+                elif child.text == 'budget':
+                    # formula: -((price - budget)/100000)
+                    self.score += -(((int(self.attributes['price'])) - int(preferences['budget']))/100000)
+                elif child.text == 'property_type':
+                    # if the type of property matches the preferered type then add
+                    # 15 to the score
+                    if self.attributes['property_type'] == preferences['property_type']:
+                        self.score += 30
+        # update score based on stations nearby the property
         self.get_stations_near_property(preferences)
 
     # function returning the distance between 2 latitude longitude points

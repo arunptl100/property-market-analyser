@@ -18,12 +18,12 @@ def run(area, beds, baths, budget, type, dist_train, interval):
     # In this case we should remove the current job and append the new one
     if scheduler.running:
         if scheduler.get_jobs():
+            job = scheduler.get_jobs()[0]
+            print(job.next_run_time)
             scheduler.remove_job("prop_job")
     else:
-        # on the very first scan just start the scheduler 
+        # on the very first scan just start the scheduler
         scheduler.start()
-    # problem, we get new instances of this file and lose the reference to the last
-    # scheduler making it impossible to shutdownt the last scheduler
     scheduler.add_job(pmarket.do_work, 'interval', args=(area, beds, baths, budget, type, dist_train, interval), hours=int(interval), id="prop_job")
     print("starting background scheduler with interval ", interval, " hour(s)")
     pmarket.do_work(area, beds, baths, budget, type, dist_train, interval)
@@ -41,6 +41,11 @@ def result():
         # setup a scheduler
         run(params.get('location'), params.get('beds'), params.get('baths'), params.get('budget'), params.get('type'), params.get('dist_train'), params.get('interval'))
         properties = pmarket.see_results()
+        # get the next scheduler running time *INOP*
+        if scheduler.running:
+            if scheduler.get_jobs():
+                job = scheduler.get_jobs()[0]
+                print(job.next_run_time)
         return render_template("results.html", result=properties)
 
 
