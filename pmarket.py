@@ -1,6 +1,7 @@
 import xml.etree.ElementTree as ET
 from collections import defaultdict
 
+import config
 import requests
 import csv
 from math import cos, asin, sqrt, pi
@@ -12,7 +13,7 @@ live = False
 # True = Code ran every interval
 repeat = True
 # Zoopla API details
-api_token = 'kwgn93rerntytt8e5zy5zf84'
+api_token = config.zoopla_api_token
 api_url_base = 'https://api.zoopla.co.uk/api/v1/'
 parameters = {'api_key': api_token}
 url = api_url_base + 'property_listings'
@@ -60,7 +61,7 @@ class property:
         a = 0.5 - cos((lat2-lat1)*p)/2 + cos(lat1*p) * cos(lat2*p) * (1-cos((lon2-lon1)*p))/2
         return (12742 * asin(sqrt(a)))*0.621371
 
-    # Functin returning a list of stations within
+    # Function returning a list of stations within
     # a set distance from the property
     # Uses the dataset in resources/Stops.csv
     # https://data.gov.uk/dataset/ff93ffc1-6656-47d8-9155-85ea0b8f2251/national-public-transport-access-nodes-naptan
