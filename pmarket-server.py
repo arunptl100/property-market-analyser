@@ -57,5 +57,6 @@ def get_details():
     id = params.get('id')
     return jsonify(pmarket.get_property(id))
 
+
 if __name__ == '__main__':
     app.run(debug=True)

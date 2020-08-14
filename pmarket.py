@@ -9,7 +9,7 @@ from math import cos, asin, sqrt, pi
 
 # False = Use a raw xml dump for testing purposes
 # True  = Use live api requests
-live = False
+live = True
 # False = Code ran once
 # True = Code ran every interval
 repeat = True
@@ -22,6 +22,14 @@ url = api_url_base + 'property_listings'
 executions = 0
 interval = 1
 global_prop_list = []
+global_stops_list = []
+
+# object storing details of a given station from the stops dataset
+class station:
+    def __init__(self, long, lat, name):
+        self.long = long
+        self.lat = lat
+        self.name = name
 
 class property:
     def __init__(self):
@@ -74,24 +82,32 @@ class property:
     # https://data.gov.uk/dataset/ff93ffc1-6656-47d8-9155-85ea0b8f2251/national-public-transport-access-nodes-naptan
     # this is very slow - optimisation (parallelisation?)
     def get_stations_near_property(self, preferences):
+        # first check that we've parsed the stations into memory as a list of
+        # station objects
+        # parsing is only done once - global_stops_list is a persistant global
+        # variable
+        if not global_stops_list:
+            print("parsing stations...")
+            # parse the csv file
+            with open('resources/Stops.csv', 'r', encoding='mac_roman') as stops:
+                reader = csv.reader(stops)
+                iter_reader = iter(reader)
+                next(iter_reader)
+                for row in iter_reader:
+                    # only consider stations that are railway stations
+                    if row[31] == "RSE":
+                        s_lon = row[29]
+                        s_lat = row[30]
+                        global_stops_list.append(station(s_lon, s_lat, row[4]))
         stations_in_range = []
         p_lon = self.attributes['longitude']
         p_lat = self.attributes['latitude']
-        # parse the csv file
-        with open('resources/Stops.csv', 'r', encoding='mac_roman') as stops:
-            reader = csv.reader(stops)
-            iter_reader = iter(reader)
-            next(iter_reader)
-            for row in iter_reader:
-                # only consider stations that are railway stations
-                if row[31] == "RSE":
-                    s_lon = row[29]
-                    s_lat = row[30]
-                    dist = self.compute_distance(float(p_lat), float(p_lon), float(s_lat), float(s_lon))
-                    if dist <= float(preferences['dist_to_station']):
-                        stations_in_range.append(row[4])
-                        # add 10 to the properties score
-                        self.score += 10
+        for stat in global_stops_list:
+            dist = self.compute_distance(float(stat.lat), float(stat.long), float(p_lat), float(p_lon))
+            if dist <= float(preferences['dist_to_station']):
+                stations_in_range.append(stat.name)
+                # add 10 to the properties score
+                self.score += 10
         # now check for any duplicate stations in the list due to errors in the
         # dataset
         self.near_stations = stations_in_range
@@ -190,7 +206,6 @@ def do_work(area, beds, baths, budget, type, dist_train, interval):
     preferences['budget'] = budget
     preferences['property_type'] = type
     preferences['dist_to_station'] = dist_train
-
     print("Processing the parameters: area: ", area, ", beds: ", beds, ", baths: ", baths, ", budget: ", budget, ", type: ", type, ", dist_train: ", dist_train)
     if live:
         response = requests.get(url=url, params=parameters)
