@@ -4,6 +4,7 @@ from collections import defaultdict
 import config
 import requests
 import csv
+import uuid
 from math import cos, asin, sqrt, pi
 
 # False = Use a raw xml dump for testing purposes
@@ -35,8 +36,9 @@ class property:
         # parse an property given in XML
         for child in listing:
             if child.text is not None:
-                # compute the properties score based on preferences
+                # add the attribute and value to the properties attribute dictionary
                 self.attributes[child.tag] = child.text
+                # compute the properties score based on preferences
                 if child.text == 'num_bedrooms':
                     # formula: |-Actual-Preference|
                     self.score += abs(-int(self.attributes['num_bedrooms'])-int(preferences['num_bedrooms']))
@@ -50,6 +52,11 @@ class property:
                     # 15 to the score
                     if self.attributes['property_type'] == preferences['property_type']:
                         self.score += 30
+        # generate a unique ID for this property
+        # we are taking properties from different sources, some info may not be
+        # present from some sources so dont generate an id based on info from
+        # the property
+        self.attributes['uid'] = uuid.uuid4()
         # update score based on stations nearby the property
         self.get_stations_near_property(preferences)
 
@@ -65,6 +72,7 @@ class property:
     # a set distance from the property
     # Uses the dataset in resources/Stops.csv
     # https://data.gov.uk/dataset/ff93ffc1-6656-47d8-9155-85ea0b8f2251/national-public-transport-access-nodes-naptan
+    # this is very slow - optimisation (parallelisation?)
     def get_stations_near_property(self, preferences):
         stations_in_range = []
         p_lon = self.attributes['longitude']
@@ -124,7 +132,7 @@ class properties:
         self.sort_properties(False)
         print("==========================================================")
         for property in self.properties:
-            print("Address : " + property.attributes['agent_address'])
+            print("Address : " + property.attributes['displayable_address'])
             print("Type : " + property.attributes['property_type'])
             print("Longitude : " + property.attributes['longitude'])
             print("Latitude : " + property.attributes['latitude'])
@@ -152,10 +160,20 @@ class properties:
         return attr_list
 
     # sorts the property list based on the score of properties
+    # returning -1 if the id does not exist
     def sort_properties(self, reverse):
         self.properties.sort(key=lambda x: x.score, reverse=reverse)
 
 
+# function returning the property object for a given id
+def get_property(id):
+    for property in global_prop_list:
+        if str(property['uid']).strip() == id.strip():
+            return property
+    return -1
+
+# returns the global property list
+# the list is populated with property objects after a call of do_work
 def see_results():
     return global_prop_list
 

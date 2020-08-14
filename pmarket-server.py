@@ -1,9 +1,10 @@
-from flask import Flask, render_template, request, g
+from flask import Flask, render_template, request, jsonify
 import pmarket
 from apscheduler.schedulers.background import BackgroundScheduler
 
 app = Flask(__name__)
 scheduler = BackgroundScheduler()
+
 
 @app.route("/")
 def index():
@@ -20,6 +21,7 @@ def run(area, beds, baths, budget, type, dist_train, interval):
         if scheduler.get_jobs():
             job = scheduler.get_jobs()[0]
             print(job.next_run_time)
+            print("removing an existing scheduled job")
             scheduler.remove_job("prop_job")
     else:
         # on the very first scan just start the scheduler
@@ -48,6 +50,12 @@ def result():
                 print(job.next_run_time)
         return render_template("results.html", result=properties)
 
+
+@app.route('/get-prop-details', methods=['POST'])
+def get_details():
+    params = request.form
+    id = params.get('id')
+    return jsonify(pmarket.get_property(id))
 
 if __name__ == '__main__':
     app.run(debug=True)

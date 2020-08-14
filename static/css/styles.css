@@ -22,3 +22,7 @@
 .jumbotron{
   max-height: 12rem !important;
 }
+
+.modal-body{
+  word-wrap: break-word;
+}
